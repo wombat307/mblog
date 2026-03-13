@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-geist-sans: "Geist", system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", monospace;
+  --font-display: "Instrument Serif", "Georgia", serif;
+  --color-ink: #272522;
+  --color-paper: #f7f6f4;
+  --color-accent: #c45c3e;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  body {
+    @apply bg-ink-50 text-ink-900 antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display font-normal tracking-tight text-ink-950;
+  }
+}
+
+/* Markdown content in post body */
+.prose-md h2 {
+  @apply mt-10 mb-4 text-xl font-display text-ink-900 border-b border-ink-200 pb-2;
+}
+.prose-md h3 {
+  @apply mt-6 mb-3 text-lg text-ink-800;
+}
+.prose-md p {
+  @apply my-4 leading-relaxed text-ink-700;
+}
+.prose-md ul, .prose-md ol {
+  @apply my-4 pl-6 text-ink-700;
+}
+.prose-md ul {
+  @apply list-disc;
+}
+.prose-md ol {
+  @apply list-decimal;
+}
+.prose-md a {
+  @apply text-accent underline underline-offset-2 hover:text-accent-dark;
+}
+.prose-md code {
+  @apply bg-ink-200/60 text-ink-800 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+.prose-md pre {
+  @apply my-4 p-4 bg-ink-900 text-ink-100 rounded-lg overflow-x-auto;
+}
+.prose-md pre code {
+  @apply bg-transparent p-0 text-inherit;
+}
+.prose-md blockquote {
+  @apply border-l-4 border-accent pl-4 my-4 italic text-ink-600;
+}
