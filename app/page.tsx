@@ -1,26 +1,14 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
+import Friends365Calendar from "@/components/Friends365Calendar";
 
 export default function HomePage() {
   const posts = getAllPosts().slice(0, 5);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <section className="mb-16">
-        <h1 className="font-display text-4xl text-ink-950 sm:text-5xl">
-          欢迎来到 mblog
-        </h1>
-        <p className="mt-4 text-lg text-ink-600">
-          一个使用 Next.js 构建的轻量博客，用 Markdown 写作，简洁高效。
-        </p>
-        <Link
-          href="/blog"
-          className="mt-6 inline-block rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-white shadow hover:bg-accent-dark transition-colors"
-        >
-          浏览全部文章
-        </Link>
-      </section>
+      <Friends365Calendar />
 
       <section>
         <h2 className="font-display text-2xl text-ink-950 mb-6">最近文章</h2>

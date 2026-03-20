@@ -18,8 +18,8 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "mblog - 个人博客",
-  description: "基于 Next.js 的简洁博客系统",
+  title: "袋熊的网络空间 - 博客",
+  description: "袋熊的网络空间：基于 Next.js 的简洁博客系统",
 };
 
 export default function RootLayout({
