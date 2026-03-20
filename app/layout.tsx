@@ -32,6 +32,14 @@ export default function RootLayout({
       lang="zh-CN"
       className={`${sourceSans.variable} ${instrumentSerif.variable}`}
     >
+      <head>
+        {/* Ahrefs analytics (global) */}
+        <script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="75FWAG6EDB2wxlNJnDTHxA"
+          async
+        ></script>
+      </head>
       <body className="flex min-h-screen flex-col font-sans">
         <Header />
         <main className="flex-1">{children}</main>
