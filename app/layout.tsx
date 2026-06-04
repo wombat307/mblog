@@ -52,9 +52,6 @@ export const metadata: Metadata = {
     description: SITE_DESC,
     images: [OG_IMAGE],
   },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-  },
 };
 
 const websiteSchema = {
@@ -72,12 +69,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 防主题闪烁脚本：在 hydration 前同步设置 html 的 dark class
+  const themeInitScript = `
+    try {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (stored !== 'light' && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch {}
+  `;
+
   return (
     <html
       lang="zh-CN"
       className={`${sourceSans.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {/* Ahrefs analytics (global) */}
         <script
           src="https://analytics.ahrefs.com/analytics.js"

@@ -150,28 +150,33 @@ export default function Comments({ postSlug }: CommentsProps) {
     persist(next);
   }
 
+  const cardCls =
+    "rounded-2xl bg-white shadow-soft dark:bg-ink-900/60 dark:shadow-none dark:border dark:border-ink-800/80";
+  const inputCls =
+    "w-full rounded-lg border border-ink-200 bg-white px-3 text-ink-950 outline-none transition focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:border-ink-700 dark:bg-ink-950 dark:text-ink-50 dark:focus-visible:ring-offset-ink-950 placeholder:text-ink-400 dark:placeholder:text-ink-600";
+
   return (
-    <section className="mt-12 pt-8 border-t border-ink-200" aria-label="评论">
-      <div className="mb-5 flex items-start justify-between gap-4">
+    <section className="mt-12" aria-label="评论">
+      <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-display text-lg text-ink-950">评论</h2>
-          <p className="mt-1 text-sm text-ink-600">
+          <h2 className="text-xl font-sans font-semibold tracking-tight text-ink-950 dark:text-ink-50">评论</h2>
+          <p className="mt-1 text-sm text-ink-500 dark:text-ink-500">
             {useUtterances
               ? "使用 Utterances（GitHub Issues）持久化评论。"
-              : "本地存储演示版：刷新后会保留在当前浏览器。"}
+              : "本地存储演示版：仅保留在当前浏览器。"}
           </p>
         </div>
         {!useUtterances && comments.length > 0 && (
-          <span className="rounded-full bg-ink-100 px-3 py-1 text-xs text-ink-600">
+          <span className="rounded-full bg-ink-100 dark:bg-ink-800 px-3 py-1 text-xs text-ink-600 dark:text-ink-400">
             {comments.length} 条
           </span>
         )}
       </div>
 
       {useUtterances ? (
-        <div className="rounded-2xl border border-ink-200/80 bg-white/60 p-4 shadow-sm">
+        <div className={`${cardCls} p-4`}>
           {!utterancesRepo ? (
-            <p className="text-sm text-ink-600">
+            <p className="text-sm text-ink-600 dark:text-ink-400">
               你已选择 Utterances，但缺少环境变量：`NEXT_PUBLIC_UTTERANCES_REPO`。
               请在 Vercel 里填入 `owner/repo` 后重新部署。
             </p>
@@ -182,13 +187,10 @@ export default function Comments({ postSlug }: CommentsProps) {
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
           <div className="lg:col-span-1">
-            <form
-              onSubmit={addComment}
-              className="rounded-2xl border border-ink-200/80 bg-white/60 p-5 shadow-sm"
-            >
+            <form onSubmit={addComment} className={`${cardCls} p-5`}>
               <div className="mb-4">
                 <label
-                  className="mb-2 block text-sm text-ink-600"
+                  className="mb-2 block text-sm font-medium text-ink-700 dark:text-ink-300"
                   htmlFor="comment-name"
                 >
                   你的名字
@@ -197,7 +199,7 @@ export default function Comments({ postSlug }: CommentsProps) {
                   id="comment-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-ink-200/80 bg-white/80 px-3 text-ink-950 outline-none transition focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50"
+                  className={`h-10 ${inputCls}`}
                   placeholder="比如：袋熊"
                   maxLength={30}
                 />
@@ -205,7 +207,7 @@ export default function Comments({ postSlug }: CommentsProps) {
 
               <div className="mb-4">
                 <label
-                  className="mb-2 block text-sm text-ink-600"
+                  className="mb-2 block text-sm font-medium text-ink-700 dark:text-ink-300"
                   htmlFor="comment-content"
                 >
                   评论内容
@@ -214,19 +216,19 @@ export default function Comments({ postSlug }: CommentsProps) {
                   id="comment-content"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className="min-h-28 w-full resize-y rounded-lg border border-ink-200/80 bg-white/80 px-3 py-2 text-ink-950 outline-none transition focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50"
+                  className={`min-h-28 py-2 resize-y ${inputCls}`}
                   placeholder="说点什么吧..."
                   maxLength={500}
                 />
               </div>
 
               {error && (
-                <p className="mb-3 text-sm text-red-600">{error}</p>
+                <p className="mb-3 text-sm text-red-500 dark:text-red-400">{error}</p>
               )}
 
               <button
                 type="submit"
-                className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-accent px-4 text-sm font-medium text-white transition hover:bg-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50"
+                className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-ink-950 dark:bg-ink-50 px-4 text-sm font-medium text-ink-50 dark:text-ink-950 transition hover:bg-ink-800 dark:hover:bg-ink-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
               >
                 发布评论
               </button>
@@ -235,24 +237,21 @@ export default function Comments({ postSlug }: CommentsProps) {
 
           <div className="lg:col-span-2">
             {comments.length === 0 ? (
-              <div className="rounded-2xl border border-ink-200/80 bg-white/60 p-5 text-sm text-ink-600 shadow-sm">
+              <div className={`${cardCls} p-5 text-sm text-ink-500 dark:text-ink-500`}>
                 暂无评论，成为第一个吧。
               </div>
             ) : (
               <ul className="space-y-4">
                 {comments.map((c) => (
-                  <li
-                    key={c.id}
-                    className="rounded-2xl border border-ink-200/80 bg-white/60 p-5 shadow-sm"
-                  >
+                  <li key={c.id} className={`${cardCls} p-5`}>
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink-100 text-sm font-display text-ink-900">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink-100 dark:bg-ink-800 text-sm font-semibold text-ink-700 dark:text-ink-300">
                           {c.name.slice(0, 2)}
                         </div>
                         <div>
-                          <p className="font-medium text-ink-950">{c.name}</p>
-                          <p className="text-xs text-ink-500">
+                          <p className="font-medium text-ink-950 dark:text-ink-50">{c.name}</p>
+                          <p className="text-xs text-ink-500 dark:text-ink-500">
                             {formatTime(c.createdAt)}
                           </p>
                         </div>
@@ -260,12 +259,12 @@ export default function Comments({ postSlug }: CommentsProps) {
                       <button
                         type="button"
                         onClick={() => deleteComment(c.id)}
-                        className="rounded-lg border border-ink-200/80 bg-white/60 px-3 py-1 text-xs font-medium text-ink-700 transition hover:border-accent/40 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50"
+                        className="rounded-lg border border-ink-200 dark:border-ink-700 px-3 py-1 text-xs font-medium text-ink-600 dark:text-ink-400 transition hover:border-accent/40 hover:text-accent dark:hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
                       >
                         删除
                       </button>
                     </div>
-                    <p className="mt-3 whitespace-pre-wrap text-sm text-ink-700">
+                    <p className="mt-3 whitespace-pre-wrap text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
                       {c.content}
                     </p>
                   </li>

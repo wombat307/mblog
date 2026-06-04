@@ -88,7 +88,17 @@ SEO是在搜索和AI结果中提升网站自然可见度的过程
 * 声音份额，对比和竞争对手表现
 
 ## 第三章：关键词分析
-### 
+
+**90%的页面无法从google获取自然流量，关键词分析可以避免此问题。关键词分析帮你确认你想写的东西，确实有人在搜**
+
+### 关键词分析入门
+* 需做好两方面：对所在行业有深入了解；了解关键词分析工具原理
+* 常用关键词生成工具
+  * [Ahrefs 免费关键词生成工具](https://ahrefs.com/zh/keyword-generator)
+  * Google Keyword Planner
+  * Google Trends
+  * Answer the Public
+  * AI 工具
 
 ## 第四章：SEO内容
 ## 第五章：页面SEO

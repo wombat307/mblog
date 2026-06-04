@@ -55,14 +55,23 @@ export default async function CategoryPage({ params }: PageProps) {
   const posts = getPostsByCategory(category);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <h1 className="font-display text-3xl text-ink-950 mb-2">分类：{categoryName}</h1>
-      <p className="text-ink-500 text-sm mb-8">共 {posts.length} 篇</p>
+    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
+      <header className="mb-10">
+        <p className="text-sm text-ink-500 dark:text-ink-500 mb-2 uppercase tracking-wider">
+          分类
+        </p>
+        <h1 className="font-display text-4xl sm:text-5xl text-ink-950 dark:text-ink-50 leading-tight">
+          {categoryName}
+        </h1>
+        <p className="mt-3 text-ink-500 dark:text-ink-500 text-sm">
+          共 {posts.length} 篇
+        </p>
+      </header>
       <CategoryNav categories={categories} currentCategory={categoryName} />
       {posts.length === 0 ? (
         <p className="text-ink-500">该分类下暂无文章。</p>
       ) : (
-        <ul className="space-y-6">
+        <ul className="divide-y divide-ink-200/70 dark:divide-ink-800/70">
           {posts.map((post) => (
             <li key={post.slug}>
               <PostCard post={post} />

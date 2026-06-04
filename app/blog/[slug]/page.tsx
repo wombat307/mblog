@@ -5,6 +5,7 @@ import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import Markdown from "@/components/Markdown";
 import Comments from "@/components/Comments";
 import JsonLd from "@/components/JsonLd";
+import { readingTime } from "@/lib/reading-time";
 
 const SITE_URL = "https://zhangxiaowan.top";
 const SITE_NAME = "袋熊挖呀挖";
@@ -108,48 +109,60 @@ export default async function BlogPostPage({ params }: PageProps) {
     ],
   };
 
+  const minutes = readingTime(post.content);
+
   return (
-    <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <JsonLd data={[articleSchema, breadcrumbSchema]} />
       <Link
         href="/blog"
-        className="text-sm text-ink-500 hover:text-accent mb-6 inline-block"
+        className="inline-flex items-center gap-1 text-sm text-ink-500 hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100 mb-10 transition-colors"
       >
-        ← 返回博客列表
+        <span aria-hidden>←</span> 返回博客列表
       </Link>
-      <header className="mb-8">
-        <div className="flex items-center gap-3 flex-wrap">
-          <time className="text-xs text-ink-500 uppercase tracking-wider">
-            {dateStr}
-          </time>
+      <header className="mb-12">
+        <div className="flex items-center gap-3 flex-wrap text-xs text-ink-500 dark:text-ink-500 uppercase tracking-wider">
           {post.category && (
-            <Link
-              href={`/blog/category/${encodeURIComponent(post.category)}`}
-              className="text-xs font-medium text-accent hover:text-accent-dark"
-            >
-              {post.category}
-            </Link>
+            <>
+              <Link
+                href={`/blog/category/${encodeURIComponent(post.category)}`}
+                className="font-medium text-accent hover:text-accent-dark dark:text-accent-light dark:hover:text-accent normal-case tracking-normal"
+              >
+                {post.category}
+              </Link>
+              <span className="text-ink-300 dark:text-ink-700">·</span>
+            </>
           )}
+          <time>{dateStr}</time>
+          <span className="text-ink-300 dark:text-ink-700">·</span>
+          <span>{minutes} 分钟阅读</span>
         </div>
-        <h1 className="font-display text-3xl text-ink-950 mt-2 sm:text-4xl">
+        <h1 className="font-display text-4xl sm:text-5xl text-ink-950 dark:text-ink-50 mt-4 leading-tight">
           {post.title}
         </h1>
+        {post.excerpt && (
+          <p className="mt-5 text-lg text-ink-600 dark:text-ink-400 leading-relaxed">
+            {post.excerpt}
+          </p>
+        )}
         {post.tags && post.tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded bg-ink-100 px-2 py-0.5 text-xs text-ink-600"
+                className="rounded-md bg-ink-100 dark:bg-ink-800/80 px-2 py-0.5 text-[11px] text-ink-500 dark:text-ink-400"
               >
-                {tag}
+                #{tag}
               </span>
             ))}
           </div>
         )}
       </header>
+      <hr className="border-0 h-px bg-ink-200 dark:bg-ink-800 mb-12" />
       <div className="min-w-0">
         <Markdown content={post.content} />
       </div>
+      <hr className="border-0 h-px bg-ink-200 dark:bg-ink-800 mt-16 mb-10" />
       <Comments postSlug={slug} />
     </article>
   );
