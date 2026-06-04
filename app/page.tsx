@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
-import Friends365Calendar from "@/components/Friends365Calendar";
 
 export default function HomePage() {
   const posts = getAllPosts().slice(0, 5);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <Friends365Calendar />
-
       <section>
         <h2 className="font-display text-2xl text-ink-950 mb-6">最近文章</h2>
         {posts.length === 0 ? (
