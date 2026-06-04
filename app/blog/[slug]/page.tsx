@@ -7,7 +7,7 @@ import Comments from "@/components/Comments";
 import JsonLd from "@/components/JsonLd";
 
 const SITE_URL = "https://zhangxiaowan.top";
-const SITE_NAME = "袋熊的网络空间";
+const SITE_NAME = "袋熊挖呀挖";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -27,7 +27,7 @@ export async function generateMetadata({
   const url = `/blog/${slug}`;
   const description =
     post.excerpt ??
-    `阅读《${post.title}》—— 袋熊的网络空间博客${post.category ? `「${post.category}」分类` : ""}文章。`;
+    `阅读《${post.title}》—— 袋熊挖呀挖博客${post.category ? `「${post.category}」分类` : ""}文章。`;
   return {
     title: post.title,
     description,

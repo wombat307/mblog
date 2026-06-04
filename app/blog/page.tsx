@@ -4,7 +4,7 @@ import PostCard from "@/components/PostCard";
 import CategoryNav from "@/components/CategoryNav";
 
 const BLOG_DESC =
-  "袋熊的网络空间博客全部文章列表，涵盖生活随笔、读书札记与技术心得。";
+  "袋熊挖呀挖博客全部文章列表，涵盖生活随笔、读书札记与技术心得。";
 
 export const metadata: Metadata = {
   title: "全部文章",

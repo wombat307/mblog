@@ -57,7 +57,7 @@ export default function Header() {
               opacity="0.75"
             />
           </svg>
-          <span>袋熊的网络空间</span>
+          <span>袋熊挖呀挖</span>
         </Link>
         <nav className="flex gap-6 text-sm text-ink-600">
           <Link href="/" className="hover:text-accent transition-colors">

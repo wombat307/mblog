@@ -19,9 +19,9 @@ const instrumentSerif = Instrument_Serif({
 });
 
 const SITE_URL = "https://zhangxiaowan.top";
-const SITE_NAME = "袋熊的网络空间";
+const SITE_NAME = "袋熊挖呀挖";
 const SITE_DESC =
-  "袋熊的网络空间：基于 Next.js 的简洁个人博客，记录生活随笔、读书札记与技术心得。";
+  "袋熊挖呀挖：基于 Next.js 的简洁个人博客，记录生活随笔、读书札记与技术心得。";
 const OG_IMAGE = "/og-default.jpg";
 
 export const metadata: Metadata = {

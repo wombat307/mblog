@@ -21,7 +21,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { category } = await params;
   const name = decodeURIComponent(category);
-  const description = `袋熊的网络空间博客「${name}」分类下的全部文章列表与札记。`;
+  const description = `袋熊挖呀挖博客「${name}」分类下的全部文章列表与札记。`;
   const url = `/blog/category/${name}`;
   return {
     title: `${name} · 分类`,
