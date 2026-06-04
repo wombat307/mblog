@@ -9,18 +9,6 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
-      <section className="mb-12">
-        <p className="text-sm text-ink-500 dark:text-ink-500 mb-3 uppercase tracking-wider">
-          袋熊挖呀挖
-        </p>
-        <h1 className="font-display text-4xl sm:text-5xl text-ink-950 dark:text-ink-50 leading-tight">
-          挖呀挖，挖出生活、读书<br className="hidden sm:block" />与一点技术。
-        </h1>
-        <p className="mt-4 text-ink-600 dark:text-ink-400 text-lg leading-relaxed">
-          一个用 Next.js 写的极简个人博客，写给自己看，也欢迎被你看见。
-        </p>
-      </section>
-
       <section>
         <div className="flex items-baseline justify-between mb-2">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-ink-500 dark:text-ink-500">
