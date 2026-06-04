@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getAllCategories, getPostsByCategory } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
 import CategoryNav from "@/components/CategoryNav";
@@ -8,18 +9,37 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
+  // Return raw category names — Next.js handles percent-encoding when matching
+  // requests. Returning encoded values made the prerendered route identifier
+  // itself percent-encoded, which 404'd when browsers requested the encoded URL.
   const categories = getAllCategories();
-  return categories.map((category) => ({
-    category: encodeURIComponent(category),
-  }));
+  return categories.map((category) => ({ category }));
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { category } = await params;
   const name = decodeURIComponent(category);
+  const description = `袋熊的网络空间博客「${name}」分类下的全部文章列表与札记。`;
+  const url = `/blog/category/${name}`;
   return {
-    title: `${name} | 分类 | mblog`,
-    description: `「${name}」分类下的文章`,
+    title: `${name} · 分类`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      url,
+      title: `${name} · 分类`,
+      description,
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name} · 分类`,
+      description,
+      images: ["/og-default.jpg"],
+    },
   };
 }
 

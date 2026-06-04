@@ -1,10 +1,28 @@
+import type { Metadata } from "next";
 import { getAllPosts, getAllCategories } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
 import CategoryNav from "@/components/CategoryNav";
 
-export const metadata = {
-  title: "博客 | mblog",
-  description: "全部文章列表",
+const BLOG_DESC =
+  "袋熊的网络空间博客全部文章列表，涵盖生活随笔、读书札记与技术心得。";
+
+export const metadata: Metadata = {
+  title: "全部文章",
+  description: BLOG_DESC,
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    type: "website",
+    url: "/blog",
+    title: "全部文章",
+    description: BLOG_DESC,
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "全部文章",
+    description: BLOG_DESC,
+    images: ["/og-default.jpg"],
+  },
 };
 
 export default function BlogListPage() {

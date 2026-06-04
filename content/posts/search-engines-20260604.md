@@ -41,6 +41,9 @@ tags:
 ## 第二章：SEO基础
 
 ### SEO基础知识
+
+SEO是在搜索和AI结果中提升网站自然可见度的过程
+
 #### SEO该怎么做
 * 关键词分析
 * 内容创作
@@ -65,10 +68,24 @@ tags:
   * 使用清晰易读的字号
   * 避免使用干扰性强的弹窗和广告
   * 确保页面快速加载， 5s的加载时间会导致90%的用户离开
-* 创建逻辑清晰的网站结构
-  * 
+* 创建逻辑清晰的网站结构：***内链**对用户体验和SEO至关重要
+* 使用逻辑清晰的URL结构
+* 安装SEO插件
+* 如果在本地运营，需要关注本地SEO
+  * 完善上架资料
+  * 确保NAP(名称、地址、电话)在各大平台一致
+  * 创建本地化内容
+  * 监控企业资料
 
+### 在Google被收录
+* 查找或创建网站地图
+* 提交网站地图
 
+### 如何衡量SEO成效
+* 自然搜索流程与展示量增长，参考：Google Search Console 、Ahrefs Web Analytics
+* 关键词排名上升，参考：[Ahrefs’ Rank Tracker](https://ahrefs.com/zh/rank-tracker)
+* AI可见度，参考：[Ahrefs Brand Radar](https://ahrefs.com/zh/brand-radar)
+* 声音份额，对比和竞争对手表现
 
 ## 第三章：关键词分析
 ## 第四章：SEO内容

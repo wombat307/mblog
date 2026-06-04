@@ -2,13 +2,15 @@ import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
 
+// 不覆盖 metadata：页面级 openGraph/alternates 会完全替换父级，覆盖会丢失 RSS alternate 与默认 OG 图。
+
 export default function HomePage() {
   const posts = getAllPosts().slice(0, 5);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <section>
-        <h2 className="font-display text-2xl text-ink-950 mb-6">最近文章</h2>
+        <h1 className="font-display text-2xl text-ink-950 mb-6">最近文章</h1>
         {posts.length === 0 ? (
           <p className="text-ink-500">暂无文章，请在 content/posts 下添加 .md 文件。</p>
         ) : (
