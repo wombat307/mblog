@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getAllPosts, getAllCategories } from "@/lib/posts";
-import PostCard from "@/components/PostCard";
 import CategoryNav from "@/components/CategoryNav";
+import BlogSearch from "@/components/BlogSearch";
 
 const BLOG_DESC =
   "袋熊挖呀挖博客全部文章列表，涵盖生活随笔、读书札记与技术心得。";
@@ -46,13 +46,7 @@ export default function BlogListPage() {
       {posts.length === 0 ? (
         <p className="text-ink-500">暂无文章。</p>
       ) : (
-        <ul className="divide-y divide-ink-200/70 dark:divide-ink-800/70">
-          {posts.map((post) => (
-            <li key={post.slug}>
-              <PostCard post={post} />
-            </li>
-          ))}
-        </ul>
+        <BlogSearch posts={posts} />
       )}
     </div>
   );

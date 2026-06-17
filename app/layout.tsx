@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import AuthSessionProvider from "@/components/SessionProvider";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin", "latin-ext"],
@@ -96,10 +97,12 @@ export default function RootLayout({
         ></script>
       </head>
       <body className="flex min-h-screen flex-col font-sans">
-        <JsonLd data={websiteSchema} />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <AuthSessionProvider>
+          <JsonLd data={websiteSchema} />
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </AuthSessionProvider>
       </body>
     </html>
   );

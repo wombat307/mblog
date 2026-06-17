@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import Markdown from "@/components/Markdown";
+import PostActions from "@/components/PostActions";
 import Comments from "@/components/Comments";
 import JsonLd from "@/components/JsonLd";
 import { readingTime } from "@/lib/reading-time";
@@ -162,7 +163,8 @@ export default async function BlogPostPage({ params }: PageProps) {
       <div className="min-w-0">
         <Markdown content={post.content} />
       </div>
-      <hr className="border-0 h-px bg-ink-200 dark:bg-ink-800 mt-16 mb-10" />
+      <PostActions postSlug={slug} />
+      <hr className="border-0 h-px bg-ink-200 dark:bg-ink-800 mt-4 mb-10" />
       <Comments postSlug={slug} />
     </article>
   );

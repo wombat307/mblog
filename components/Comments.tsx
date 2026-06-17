@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
 
 interface CommentsProps {
   postSlug: string;
@@ -12,6 +14,10 @@ type Comment = {
   name: string;
   content: string;
   createdAt: number;
+  /** 作者的稳定标识（邮箱），用于权限校验。早期数据可能没有该字段。 */
+  authorId?: string;
+  /** 作者头像，登录评论才会写入。 */
+  avatar?: string;
 };
 
 function safeJsonParse<T>(value: string | null): T | null {
@@ -43,7 +49,10 @@ export default function Comments({ postSlug }: CommentsProps) {
 
   const storageKey = useMemo(() => `mblog_comments:${postSlug}`, [postSlug]);
 
-  const [name, setName] = useState("");
+  const { data: session, status: sessionStatus } = useSession();
+  const isAuthed = Boolean(session?.user);
+  const currentUserId = session?.user?.email ?? undefined;
+
   const [content, setContent] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -102,17 +111,14 @@ export default function Comments({ postSlug }: CommentsProps) {
     e.preventDefault();
     setError(null);
 
-    const trimmedName = name.trim();
-    const trimmedContent = content.trim();
+    if (!isAuthed || !session?.user) {
+      setError("请先登录后再发表评论。");
+      return;
+    }
 
-    if (trimmedName.length === 0) {
-      setError("请填写你的名字。");
-      return;
-    }
-    if (trimmedName.length > 30) {
-      setError("名字太长了（最多 30 个字符）。");
-      return;
-    }
+    const trimmedContent = content.trim();
+    const authorName = session.user.name?.trim() || session.user.email || "匿名";
+
     if (trimmedContent.length === 0) {
       setError("请填写评论内容。");
       return;
@@ -129,9 +135,11 @@ export default function Comments({ postSlug }: CommentsProps) {
 
     const nextComment: Comment = {
       id,
-      name: trimmedName,
+      name: authorName,
       content: trimmedContent,
       createdAt: Date.now(),
+      authorId: currentUserId,
+      avatar: session.user.image ?? undefined,
     };
 
     const next = [nextComment, ...comments];
@@ -142,6 +150,12 @@ export default function Comments({ postSlug }: CommentsProps) {
 
   function deleteComment(id: string) {
     setError(null);
+    const target = comments.find((c) => c.id === id);
+    if (!target) return;
+    if (!currentUserId || target.authorId !== currentUserId) {
+      setError("只能删除自己发表的评论。");
+      return;
+    }
     const ok = window.confirm("确定删除这条评论吗？");
     if (!ok) return;
 
@@ -185,70 +199,127 @@ export default function Comments({ postSlug }: CommentsProps) {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
-          <div className="lg:col-span-1">
-            <form onSubmit={addComment} className={`${cardCls} p-5`}>
-              <div className="mb-4">
-                <label
-                  className="mb-2 block text-sm font-medium text-ink-700 dark:text-ink-300"
-                  htmlFor="comment-name"
-                >
-                  你的名字
-                </label>
-                <input
-                  id="comment-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={`h-10 ${inputCls}`}
-                  placeholder="比如：袋熊"
-                  maxLength={30}
-                />
+        <div className="space-y-8">
+          <div>
+            {sessionStatus === "loading" ? (
+              <div className={`${cardCls} p-5 text-sm text-ink-500 dark:text-ink-500`}>
+                正在检查登录状态…
               </div>
-
-              <div className="mb-4">
-                <label
-                  className="mb-2 block text-sm font-medium text-ink-700 dark:text-ink-300"
-                  htmlFor="comment-content"
-                >
-                  评论内容
-                </label>
-                <textarea
-                  id="comment-content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className={`min-h-28 py-2 resize-y ${inputCls}`}
-                  placeholder="说点什么吧..."
-                  maxLength={500}
-                />
+            ) : !isAuthed ? (
+              <div className={`${cardCls} p-5`}>
+                <p className="text-sm font-medium text-ink-950 dark:text-ink-50">
+                  登录后再发表评论
+                </p>
+                <p className="mt-1 text-sm text-ink-500 dark:text-ink-500">
+                  使用 Google 或 GitHub 账号快速登录，发布的内容会与你的账号关联。
+                </p>
+                <div className="mt-4 flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      signIn(undefined, {
+                        callbackUrl:
+                          typeof window !== "undefined"
+                            ? window.location.pathname + window.location.hash
+                            : "/",
+                      })
+                    }
+                    className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-ink-950 dark:bg-ink-50 px-4 text-sm font-medium text-ink-50 dark:text-ink-950 transition hover:bg-ink-800 dark:hover:bg-ink-200"
+                  >
+                    去登录
+                  </button>
+                  <Link
+                    href="/login"
+                    className="text-center text-xs text-ink-500 hover:text-ink-900 dark:hover:text-ink-100 transition-colors"
+                  >
+                    了解登录方式 →
+                  </Link>
+                </div>
               </div>
+            ) : (
+              <form onSubmit={addComment} className={`${cardCls} p-5`}>
+                <div className="mb-4 flex items-center gap-3">
+                  {session?.user?.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={session.user.image}
+                      alt={session.user.name ?? "avatar"}
+                      className="h-9 w-9 rounded-full object-cover ring-1 ring-ink-200 dark:ring-ink-700"
+                    />
+                  ) : (
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink-100 text-sm font-semibold text-ink-700 dark:bg-ink-800 dark:text-ink-300">
+                      {(session?.user?.name ?? "?").trim().charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-ink-950 dark:text-ink-50">
+                      {session?.user?.name ?? "未命名用户"}
+                    </p>
+                    {session?.user?.email && (
+                      <p className="truncate text-xs text-ink-500 dark:text-ink-500">
+                        {session.user.email}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-              {error && (
-                <p className="mb-3 text-sm text-red-500 dark:text-red-400">{error}</p>
-              )}
+                <div className="mb-4">
+                  <label
+                    className="mb-2 block text-sm font-medium text-ink-700 dark:text-ink-300"
+                    htmlFor="comment-content"
+                  >
+                    评论内容
+                  </label>
+                  <textarea
+                    id="comment-content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    className={`min-h-28 py-2 resize-y ${inputCls}`}
+                    placeholder="说点什么吧..."
+                    maxLength={500}
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-ink-950 dark:bg-ink-50 px-4 text-sm font-medium text-ink-50 dark:text-ink-950 transition hover:bg-ink-800 dark:hover:bg-ink-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
-              >
-                发布评论
-              </button>
-            </form>
+                {error && (
+                  <p className="mb-3 text-sm text-red-500 dark:text-red-400">{error}</p>
+                )}
+
+                <button
+                  type="submit"
+                  className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-ink-950 dark:bg-ink-50 px-4 text-sm font-medium text-ink-50 dark:text-ink-950 transition hover:bg-ink-800 dark:hover:bg-ink-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
+                >
+                  发布评论
+                </button>
+              </form>
+            )}
           </div>
 
-          <div className="lg:col-span-2">
+          <div>
             {comments.length === 0 ? (
               <div className={`${cardCls} p-5 text-sm text-ink-500 dark:text-ink-500`}>
                 暂无评论，成为第一个吧。
               </div>
             ) : (
               <ul className="space-y-4">
-                {comments.map((c) => (
+                {comments.map((c) => {
+                  const canDelete =
+                    Boolean(currentUserId) && c.authorId === currentUserId;
+                  return (
                   <li key={c.id} className={`${cardCls} p-5`}>
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink-100 dark:bg-ink-800 text-sm font-semibold text-ink-700 dark:text-ink-300">
-                          {c.name.slice(0, 2)}
-                        </div>
+                        {c.avatar ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={c.avatar}
+                            alt={c.name}
+                            className="h-9 w-9 rounded-xl object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink-100 dark:bg-ink-800 text-sm font-semibold text-ink-700 dark:text-ink-300">
+                            {c.name.slice(0, 2)}
+                          </div>
+                        )}
                         <div>
                           <p className="font-medium text-ink-950 dark:text-ink-50">{c.name}</p>
                           <p className="text-xs text-ink-500 dark:text-ink-500">
@@ -256,19 +327,22 @@ export default function Comments({ postSlug }: CommentsProps) {
                           </p>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => deleteComment(c.id)}
-                        className="rounded-lg border border-ink-200 dark:border-ink-700 px-3 py-1 text-xs font-medium text-ink-600 dark:text-ink-400 transition hover:border-accent/40 hover:text-accent dark:hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
-                      >
-                        删除
-                      </button>
+                      {canDelete && (
+                        <button
+                          type="button"
+                          onClick={() => deleteComment(c.id)}
+                          className="rounded-lg border border-ink-200 dark:border-ink-700 px-3 py-1 text-xs font-medium text-ink-600 dark:text-ink-400 transition hover:border-accent/40 hover:text-accent dark:hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
+                        >
+                          删除
+                        </button>
+                      )}
                     </div>
                     <p className="mt-3 whitespace-pre-wrap text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
                       {c.content}
                     </p>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             )}
           </div>

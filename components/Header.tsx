@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
+import HeaderAuth from "./HeaderAuth";
 
 export default function Header() {
   return (
@@ -61,10 +62,11 @@ export default function Header() {
             <Link href="/blog" className="rounded-full px-3 py-1.5 hover:bg-ink-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-ink-100 transition-colors">
               博客
             </Link>
-            <Link href="/login" className="rounded-full px-3 py-1.5 hover:bg-ink-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-ink-100 transition-colors">
-              登录
+            <Link href="/about" className="rounded-full px-3 py-1.5 hover:bg-ink-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-ink-100 transition-colors">
+              关于
             </Link>
           </nav>
+          <HeaderAuth />
           <ThemeToggle />
         </div>
       </div>
